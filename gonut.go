@@ -436,7 +436,7 @@ func (o *Gonut) BuildInstance() error {
 		if o.Config.Thread {
 			o.DPRINT("Copying strings required to intercept exit-related API")
 			// these exit-related API will be replaced with pointer to RtlExitUserThread
-			copy(o.Instance.ExitApi[:], "ExitProcess;exit;_exit;_cexit;_c_exit;quick_exit;_Exit")
+			copy(o.Instance.ExitApi[:], "ExitProcess;exit;_exit;_cexit;_c_exit;quick_exit;_Exit;_o_exit")
 		}
 	}
 
@@ -509,6 +509,25 @@ func (o *Gonut) BuildInstance() error {
 // static int build_loader(PDONUT_CONFIG c) { ... }
 func (o *Gonut) BuildLoader() error {
 
+	var LOADER_EXE_X64_RSP_ALIGN = []byte{
+        // push rbp
+        0x55,
+        // mov rbp, rsp
+        0x48, 0x89, 0xE5,
+        // and rsp, -0x10
+        0x48, 0x83, 0xE4, 0xF0,
+        // sub rsp, 0x20
+        0x48, 0x83, 0xEC, 0x20,
+        // call $ + 5
+        0xE8, 0x05, 0x00, 0x00, 0x00,
+        // mov rsp, rbp
+        0x48, 0x89, 0xEC,
+        // pop rbp
+        0x5D,
+        // ret
+        0xC3,
+	}
+
 	loaderSize := 0
 
 	// target is x86?
@@ -517,11 +536,11 @@ func (o *Gonut) BuildLoader() error {
 	} else
 	// target is amd64?
 	if o.Config.Arch == DONUT_ARCH_X64 {
-		loaderSize = len(LOADER_EXE_X64)
+		loaderSize = len(LOADER_EXE_X64_RSP_ALIGN) + len(LOADER_EXE_X64)
 	} else
 	// target can be both x86 and amd64?
 	if o.Config.Arch == DONUT_ARCH_X96 {
-		loaderSize = len(LOADER_EXE_X86) + len(LOADER_EXE_X64)
+		loaderSize = len(LOADER_EXE_X64_RSP_ALIGN) + len(LOADER_EXE_X86) + len(LOADER_EXE_X64)
 	}
 
 	o.DPRINT("Inserting opcodes")
@@ -555,16 +574,7 @@ func (o *Gonut) BuildLoader() error {
 		o.DPRINT("Copying %d bytes of amd64 shellcode", loaderSize)
 
 		// ensure stack is 16-byte aligned for x64 for Microsoft x64 calling convention
-
-		// and rsp, -0x10
-		pl.PutByte(0x48)
-		pl.PutByte(0x83)
-		pl.PutByte(0xE4)
-		pl.PutByte(0xF0)
-		// push rcx
-		// this is just for alignment, any 8 bytes would do
-		pl.PutByte(0x51)
-
+		pl.PutBytes(LOADER_EXE_X64_RSP_ALIGN);
 		pl.PutBytes(LOADER_EXE_X64)
 	} else
 	// x86 + AMD64?
@@ -580,19 +590,11 @@ func (o *Gonut) BuildLoader() error {
 		// js dword x86_code
 		pl.PutByte(0x0F)
 		pl.PutByte(0x88)
-		pl.PutUint32(uint32(len(LOADER_EXE_X64) + 5))
+		pl.PutUint32(uint32(len(LOADER_EXE_X64_RSP_ALIGN) + len(LOADER_EXE_X64)))
 
 		// ensure stack is 16-byte aligned for x64 for Microsoft x64 calling convention
 
-		// and rsp, -0x10
-		pl.PutByte(0x48)
-		pl.PutByte(0x83)
-		pl.PutByte(0xE4)
-		pl.PutByte(0xF0)
-		// push rcx
-		// this is just for alignment, any 8 bytes would do
-		pl.PutByte(0x51)
-
+		pl.PutBytes(LOADER_EXE_X64_RSP_ALIGN)
 		pl.PutBytes(LOADER_EXE_X64)
 		// pop edx
 		pl.PutByte(0x5A)

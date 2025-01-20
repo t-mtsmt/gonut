@@ -35,7 +35,7 @@ func NewCommand(c *gonut.Config) *cobra.Command {
   gonut -i loader.dll -c TestClass -m RunProcess -p "calc notepad" -s http://remote_server.com/modules/
   gonut -z2 -k2 -t -i loader.exe -o out.bin
 `,
-		Version:       "v1.0.0-3",
+		Version:       "v1.1.0-1",
 		SilenceErrors: true,
 	}
 
@@ -75,7 +75,7 @@ func NewCommand(c *gonut.Config) *cobra.Command {
 	11=Rust
 `)
 	cmd.Flags().Uint32VarP(&c.OEP, "oep", "y", 0,
-		"Create thread for loader and continue execution at <addr> supplied. (eg. 0x1234)")
+		"Create a new thread for the loader and continue execution at <offset> relative to the host process's executable.")
 	cmd.Flags().Uint32VarP((*uint32)(&c.ExitOpt), "exit", "x", uint32(gonut.DONUT_OPT_EXIT_THREAD),
 		`Exit behaviour:
 	1=Exit thread

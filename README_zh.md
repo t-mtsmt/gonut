@@ -84,7 +84,7 @@ Loader相当于一个Shellcode模板，在内存中执行时会根据Generator�
 - [C# generator by n1xbyte](https://github.com/n1xbyte/donutCS)
 - [Go generator by awgh](https://github.com/Binject/go-donut)
 
-但是这两个项目均已很久未更新，不支持最新版**D**onut（v1.0）的Loader，且均不支持Decoy、ETW Bypass、压缩、指定输出格式等常用功能。
+但是这两个项目均已很久未更新，不支持最新版**D**onut（v1.1）的Loader，且均不支持Decoy、ETW Bypass、压缩、指定输出格式等常用功能。
 
 ### Gonut与Donut的Generator的区别
 
@@ -135,7 +135,7 @@ go build -v
 | -a, --arch     | int      | Target architecture:<br/>  1=x86<br/>  2=amd64<br/>  3=x86+amd64<br/>(default 3) |
 | -o, --output   | string   | Output file to save loader.<br/>(default: loader.[format])   |
 | -f, --format   | int      | Output format:<br/>  1=Binary<br/>  2=Base64<br/>  3=C<br/>  4=Ruby<br/>  5=Python<br/>  6=Powershell<br/>  7=C#<br/>  8=Hex<br/>  9=UUID<br/>  10=Golang<br/>  11=Rust<br/>(default 1) |
-| -y, --oep      | int      | Create thread for loader and continue execution at \<addr\> supplied. <br/>(eg. 0xdeadbeef) |
+| -y, --oep      | int      | Create a new thread for the loader and continue execution at \<offset\> relative to the host process's executable. <br/>(eg. 0xdeadbeef) |
 | -x, --exit     | int      | Exit behaviour:<br/>  1=Exit thread<br/>  2=Exit process<br/>  3=Do not exit or cleanup and block indefinitely<br/>(default 1) |
 | -c, --class    | string   | Optional class name. (required for .NET DLL, format: namespace.class) |
 | -d, --domain   | string   | AppDomain name to create for .NET assembly.<br/>If entropy is enabled, this is generated randomly. |

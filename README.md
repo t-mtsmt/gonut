@@ -76,7 +76,7 @@ To solve the above problems, **G**onut was born.
 - [C# generator by n1xbyte](https://github.com/n1xbyte/donutCS)
 - [Go generator by awgh](https://github.com/Binject/go-donut)
 
-However, these two projects have not been updated for a long time, do not support the latest version (v1.0) of Donut Loader, and do not support common functions such as Decoy, ETW Bypass, compression, specified output formats, etc.
+However, these two projects have not been updated for a long time, do not support the latest version (v1.1) of Donut Loader, and do not support common functions such as Decoy, ETW Bypass, compression, specified output formats, etc.
 
 ### Differences between Gonut and Donut's Generator
 
@@ -127,7 +127,7 @@ Much the same as [**D**onut's usage](https://github.com/TheWover/donut#4-usage).
 | -a, --arch     | int           | Target architecture:<br/>  1=x86<br/>  2=amd64<br/>  3=x86+amd64<br/>(default 3) |
 | -o, --output   | string        | Output file to save loader.<br/>(default: loader.[format])   |
 | -f, --format   | int           | Output format:<br/>  1=Binary<br/>  2=Base64<br/>  3=C<br/>  4=Ruby<br/>  5=Python<br/>  6=Powershell<br/>  7=C#<br/>  8=Hex<br/>  9=UUID<br/>  10=Golang<br/>  11=Rust<br/>(default 1) |
-| -y, --oep      | int           | Create thread for loader and continue execution at \<addr\> supplied. <br/>(eg. 0xdeadbeef) |
+| -y, --oep      | int           | Create a new thread for the loader and continue execution at \<offset\> relative to the host process's executable. <br/>(eg. 0xdeadbeef) |
 | -x, --exit     | int           | Exit behaviour:<br/>  1=Exit thread<br/>  2=Exit process<br/>  3=Do not exit or cleanup and block indefinitely<br/>(default 1) |
 | -c, --class    | string        | Optional class name. (required for .NET DLL, format: namespace.class) |
 | -d, --domain   | string        | AppDomain name to create for .NET assembly.<br/>If entropy is enabled, this is generated randomly. |
